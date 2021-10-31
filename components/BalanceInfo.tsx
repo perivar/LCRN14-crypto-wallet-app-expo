@@ -18,17 +18,20 @@ const BalanceInfo = ({
 }: IBalanceInfo) => {
   return (
     <View style={containerStyle}>
+      {/* Title */}
       <Text style={{ ...FONTS.h3, color: COLORS.lightGray3 }}>{title}</Text>
 
+      {/* Figures */}
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         <Text style={{ ...FONTS.h3, color: COLORS.lightGray3 }}>$</Text>
-        <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-          {' '}
-          {displayAmount?.toString()}
+        <Text
+          style={{ marginLeft: SIZES.base, ...FONTS.h2, color: COLORS.white }}>
+          {displayAmount?.toLocaleString()}
         </Text>
         <Text style={{ ...FONTS.h3, color: COLORS.lightGray3 }}> USD</Text>
       </View>
 
+      {/* Change Percentage */}
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         {changePct !== 0 && (
           <Image
@@ -43,6 +46,7 @@ const BalanceInfo = ({
             }}
           />
         )}
+
         <Text
           style={{
             marginLeft: SIZES.base,

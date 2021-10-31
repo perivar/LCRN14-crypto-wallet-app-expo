@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { BalanceInfo, Chart, IconTextButton } from '../components';
@@ -12,14 +13,16 @@ const Home = () => {
   const { myHoldings, coins } = marketReducer;
   const [selectedCoin, setSelectedCoin] = useState(null);
 
-  useEffect(() => {
-    getHoldings(dummyData.holdings);
-    getCoinMarket();
-  }, []);
+  // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
+  useFocusEffect(
+    React.useCallback(() => {
+      getHoldings(dummyData.holdings);
+      getCoinMarket();
+    }, [])
+  );
 
-  let totalWallet = myHoldings
-    ?.reduce((a, b) => a + (b.total || 0), 0)
-    .toFixed(0);
+  let totalWallet = myHoldings?.reduce((a, b) => a + (b.total || 0), 0);
+
   let valueChange = myHoldings?.reduce(
     (a, b) => a + (b.holding_value_change_7d || 0),
     0
@@ -71,7 +74,7 @@ const Home = () => {
   return (
     <MainLayout>
       <View style={{ flex: 1, backgroundColor: COLORS.black }}>
-        {/* Header  */}
+        {/* Header  - Wallet Info */}
         {renderWalletInfoSection()}
 
         {/* Chart */}
@@ -84,7 +87,7 @@ const Home = () => {
           }
         />
 
-        {/* Top Crypto  */}
+        {/* Top Cryptocurrency */}
         <FlatList
           data={coins}
           keyExtractor={item => item.id.toString()}
@@ -135,7 +138,7 @@ const Home = () => {
                       color: COLORS.white,
                       ...FONTS.h4,
                     }}>
-                    $ {item.current_price}
+                    $ {item.current_price.toLocaleString()}
                   </Text>
                   <View
                     style={{

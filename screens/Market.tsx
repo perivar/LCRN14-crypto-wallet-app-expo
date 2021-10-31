@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 import { Animated, FlatList, Image, Text, View } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -14,9 +15,16 @@ const marketTabs = constants.marketTabs.map(marketTab => ({
   ref: React.createRef<View>(),
 }));
 
+type Measure = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 interface ITabIndicator {
-  measureLayout: any[];
-  scrollX: any;
+  measureLayout: Measure[];
+  scrollX: Animated.Value;
 }
 
 const TabIndicator = ({ measureLayout, scrollX }: ITabIndicator) => {
@@ -31,7 +39,7 @@ const TabIndicator = ({ measureLayout, scrollX }: ITabIndicator) => {
     <Animated.View
       style={{
         position: 'absolute',
-        left: 0,
+        left: -40, // PIN: why do I need to offset this?
         height: '100%',
         width: (SIZES.width - SIZES.radius * 2) / 2,
         borderRadius: SIZES.radius,
@@ -47,52 +55,43 @@ const TabIndicator = ({ measureLayout, scrollX }: ITabIndicator) => {
 };
 
 interface ITabs {
-  scrollX: any;
+  scrollX: Animated.Value;
+  onMarketTabPress(marketTabIndex: number): void;
 }
 
-const Tabs = ({ scrollX }: ITabs) => {
-  const [measureLayout, setMeasureLayout] = React.useState<
-    {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }[]
-  >([]);
+// https://stackoverflow.com/questions/67166655/react-native-ref-measurelayout
+const Tabs = ({ scrollX, onMarketTabPress }: ITabs) => {
+  const [measureLayout, setMeasureLayout] = React.useState<Measure[]>([]);
   const containerRef = React.useRef();
 
   React.useEffect(() => {
-    let ml: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }[] = [];
+    let m: Measure[] = [];
 
     marketTabs.forEach(marketTab => {
       marketTab?.ref?.current?.measureLayout(
         containerRef.current,
         (x, y, width, height) => {
-          ml.push({
+          m.push({
             x,
             y,
             width,
             height,
           });
-
-          if (ml.length === marketTabs.length) {
-            setMeasureLayout(ml);
+          if (m.length === marketTabs.length) {
+            setMeasureLayout(m);
           }
         },
-        () => console.log('failed')
+        () => console.log('measureLayout failed')
       );
     });
   }, [containerRef.current]);
 
   return (
     <View
+      ref={containerRef}
       style={{
         flexDirection: 'row',
+        justifyContent: 'space-around',
       }}>
       {/* Tab Indicator */}
       {measureLayout.length > 0 && (
@@ -104,11 +103,12 @@ const Tabs = ({ scrollX }: ITabs) => {
         return (
           <TouchableOpacity
             key={`MarketTab-${index}`}
-            style={{
-              flex: 1,
-            }}
-            // onPress
-          >
+            style={
+              {
+                // flex: 1,
+              }
+            }
+            onPress={() => onMarketTabPress(index)}>
             <View
               ref={item.ref}
               style={{
@@ -117,7 +117,11 @@ const Tabs = ({ scrollX }: ITabs) => {
                 justifyContent: 'center',
                 height: 40,
               }}>
-              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>
+              <Text
+                style={{
+                  color: COLORS.white,
+                  ...FONTS.h3,
+                }}>
                 {item.title}
               </Text>
             </View>
@@ -132,11 +136,24 @@ const Market = () => {
   const { marketReducer } = useAppSelector(state => state);
   const { coins } = marketReducer;
 
-  const scrollX = React.useRef(new Animated.Value(0)).current;
+  const scrollX = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+  const marketTabScrollViewRef = React.useRef<FlatList>();
 
-  useEffect(() => {
-    getCoinMarket();
-  }, []);
+  const onMarketTabPress = React.useCallback(
+    (marketTabIndex: number) => {
+      marketTabScrollViewRef?.current?.scrollToOffset({
+        offset: marketTabIndex * SIZES.width,
+      });
+    },
+    [marketTabScrollViewRef.current]
+  );
+
+  // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
+  useFocusEffect(
+    React.useCallback(() => {
+      getCoinMarket();
+    }, [])
+  );
 
   function renderTabBar() {
     return (
@@ -147,7 +164,7 @@ const Market = () => {
           borderRadius: SIZES.radius,
           backgroundColor: COLORS.gray,
         }}>
-        <Tabs scrollX={scrollX} />
+        <Tabs scrollX={scrollX} onMarketTabPress={onMarketTabPress} />
       </View>
     );
   }
@@ -160,13 +177,14 @@ const Market = () => {
           marginTop: SIZES.radius,
           marginHorizontal: SIZES.radius,
         }}>
-        <TextButton label="USD" />
+        <TextButton label="USD" onPress={() => console.log('Market USD')} />
 
         <TextButton
           label="% (7d)"
           containerStyle={{
             marginLeft: SIZES.base,
           }}
+          onPress={() => console.log('Market 7d')}
         />
 
         <TextButton
@@ -174,6 +192,7 @@ const Market = () => {
           containerStyle={{
             marginLeft: SIZES.base,
           }}
+          onPress={() => console.log('Market Top')}
         />
       </View>
     );
@@ -182,6 +201,7 @@ const Market = () => {
   function renderList() {
     return (
       <Animated.FlatList
+        ref={marketTabScrollViewRef}
         data={marketTabs}
         contentContainerStyle={{
           marginTop: SIZES.padding,
@@ -198,7 +218,8 @@ const Market = () => {
             useNativeDriver: false,
           }
         )}
-        renderItem={({ item, index }) => {
+        // we are not using the flat-list data for renderItem
+        renderItem={() => {
           return (
             <View
               style={{
@@ -261,6 +282,7 @@ const Market = () => {
                           withVerticalLines={false}
                           withOuterLines={false}
                           data={{
+                            labels: [],
                             datasets: [
                               {
                                 data: item.sparkline_in_7d.price,
@@ -291,7 +313,7 @@ const Market = () => {
                             color: COLORS.white,
                             ...FONTS.h4,
                           }}>
-                          $ {item.current_price}
+                          $ {item.current_price.toLocaleString()}
                         </Text>
 
                         <View

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { FlatList, Image, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -13,13 +14,15 @@ const Portfolio = () => {
   const { myHoldings } = marketReducer;
   const [selectedCoin, setSelectedCoin] = useState(null);
 
-  useEffect(() => {
-    getHoldings(dummyData.holdings);
-  }, []);
+  // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
+  useFocusEffect(
+    React.useCallback(() => {
+      getHoldings(dummyData.holdings);
+    }, [])
+  );
 
-  let totalWallet = myHoldings
-    ?.reduce((a, b) => a + (b.total || 0), 0)
-    .toFixed(0);
+  let totalWallet = myHoldings?.reduce((a, b) => a + (b.total || 0), 0);
+
   let valueChange = myHoldings?.reduce(
     (a, b) => a + (b.holding_value_change_7d || 0),
     0
@@ -166,7 +169,7 @@ const Portfolio = () => {
                       ...FONTS.h4,
                       lineHeight: 15,
                     }}>
-                    ${item.current_price.toLocaleString()}
+                    $ {item.current_price.toLocaleString()}
                   </Text>
 
                   <View

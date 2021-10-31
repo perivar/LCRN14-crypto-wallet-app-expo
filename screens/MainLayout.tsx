@@ -76,7 +76,7 @@ const MainLayout = ({ children }: IMainLayout) => {
           label="Withdraw"
           icon={icons.withdraw}
           containerStyle={{ marginTop: SIZES.base }}
-          onPress={() => console.log('Transfer')}
+          onPress={() => console.log('Withdraw')}
         />
       </Animated.View>
     </View>

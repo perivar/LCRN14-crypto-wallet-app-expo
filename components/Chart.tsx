@@ -18,7 +18,9 @@ interface IChart {
 }
 
 const Chart = ({ chartPrices, containerStyle }: IChart) => {
+  // Points
   let startUnixTimestamp = moment().subtract(7, 'day').unix();
+
   let data = chartPrices
     ? chartPrices?.map((item: any, index: number) => {
         return {

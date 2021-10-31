@@ -2,8 +2,6 @@ import axios from 'axios';
 
 import store from '../configureStore';
 
-// import store from '../configureStore';
-
 export const GET_HOLDINGS_BEGIN = 'GET_HOLDINGS_BEGIN';
 export const GET_HOLDINGS_SUCCESS = 'GET_HOLDINGS_SUCCESS';
 export const GET_HOLDINGS_FAILURE = 'GET_HOLDINGS_FAILURE';
@@ -12,7 +10,6 @@ export const GET_COIN_MARKET_SUCCESS = 'GET_COIN_MARKET_SUCCESS';
 export const GET_COIN_MARKET_FAILURE = 'GET_COIN_MARKET_FAILURE';
 
 // Holdings
-
 export const getHoldingsBegin = () => ({
   type: GET_HOLDINGS_BEGIN,
 });
@@ -84,7 +81,6 @@ export const getHoldings = async (
 };
 
 // Coin market
-
 export const getCoinMarketBegin = () => ({
   type: GET_COIN_MARKET_BEGIN,
 });

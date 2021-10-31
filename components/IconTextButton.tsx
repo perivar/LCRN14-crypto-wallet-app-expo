@@ -25,6 +25,7 @@ const IconTextButton = ({
 }: IIconTextButton) => {
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={[
         {
           flexDirection: 'row',
