@@ -1,0 +1,42 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": false
+  },
+  "eslint.alwaysShowStatus": true,
+  "files.autoSave": "onFocusChange",
+  "jest.autoRun": {},
+  "cSpell.words": [
+    "Pressable",
+    "Semibold",
+    "Subheadline",
+    "cocoapods",
+    "consts",
+    "fluentui",
+    "focusable",
+    "macos",
+    "monospace",
+    "nuget",
+    "objc",
+    "podspec",
+    "podspecs",
+    "stylesheet",
+    "subspec",
+    "uifabricshared",
+    "unemphasized",
+    "favourite",
+    "firestore"
+  ]
+}
