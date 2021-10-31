@@ -5,11 +5,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { BalanceInfo, Chart } from '../components';
 import { COLORS, dummyData, FONTS, icons, SIZES } from '../constants';
-import { useAppSelector } from '../stores/hooks';
+import { useAppDispatch, useAppSelector } from '../stores/hooks';
 import { getHoldings } from '../stores/market/marketActions';
 import MainLayout from './MainLayout';
 
 const Portfolio = () => {
+  const dispatch = useAppDispatch();
   const { marketReducer } = useAppSelector(state => state);
   const { myHoldings } = marketReducer;
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -17,7 +18,7 @@ const Portfolio = () => {
   // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
   useFocusEffect(
     React.useCallback(() => {
-      getHoldings(dummyData.holdings);
+      dispatch(getHoldings(dummyData.holdings));
     }, [])
   );
 

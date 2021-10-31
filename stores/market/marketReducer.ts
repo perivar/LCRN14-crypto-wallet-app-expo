@@ -1,6 +1,6 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import * as marketActions from './marketActions';
+import { RootState } from '../configureStore';
 
 interface IMarketState {
   myHoldings: any[];
@@ -16,47 +16,62 @@ const initialState: IMarketState = {
   loading: false,
 };
 
-type MarketReducer = typeof initialState;
-
-const marketReducer = (
-  state = initialState,
-  action: PayloadAction<any>
-): MarketReducer => {
-  switch (action.type) {
-    case marketActions.GET_HOLDINGS_BEGIN:
+const marketSlice = createSlice({
+  name: 'market',
+  initialState,
+  reducers: {
+    getHoldingsBegin: state => {
       return {
         ...state,
         loading: true,
       };
-    case marketActions.GET_HOLDINGS_SUCCESS:
+    },
+    getHoldingsSuccess: (state, action: PayloadAction<any[]>) => {
       return {
         ...state,
         myHoldings: action.payload,
       };
-    case marketActions.GET_HOLDINGS_FAILURE:
+    },
+    getHoldingsFailure: (state, action: PayloadAction<any[]>) => {
       return {
         ...state,
         error: action.payload,
       };
-    case marketActions.GET_COIN_MARKET_BEGIN:
+    },
+    getCoinMarketBegin: state => {
       return {
         ...state,
         loading: true,
       };
-    case marketActions.GET_COIN_MARKET_SUCCESS:
+    },
+    getCoinMarketSuccess: (state, action: PayloadAction<any[]>) => {
       return {
         ...state,
         coins: action.payload,
       };
-    case marketActions.GET_COIN_MARKET_FAILURE:
+    },
+    getCoinMarketFailure: (state, action: PayloadAction<any[]>) => {
       return {
         ...state,
         error: action.payload,
       };
+    },
+  },
+});
 
-    default:
-      return initialState;
-  }
-};
+// Actions generated from the slice
+export const {
+  getHoldingsBegin,
+  getHoldingsSuccess,
+  getHoldingsFailure,
+  getCoinMarketBegin,
+  getCoinMarketSuccess,
+  getCoinMarketFailure,
+} = marketSlice.actions;
 
+// export cart selector to get the slice in any component
+export const marketSelector = (state: RootState) => state.marketReducer;
+
+// export the reducer
+const marketReducer = marketSlice.reducer;
 export default marketReducer;

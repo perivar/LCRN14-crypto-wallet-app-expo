@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { HeaderBar, TextButton } from '../components';
 import { COLORS, constants, FONTS, icons, SIZES } from '../constants';
-import { useAppSelector } from '../stores/hooks';
+import { useAppDispatch, useAppSelector } from '../stores/hooks';
 import { getCoinMarket } from '../stores/market/marketActions';
 import MainLayout from './MainLayout';
 
@@ -133,6 +133,7 @@ const Tabs = ({ scrollX, onMarketTabPress }: ITabs) => {
 };
 
 const Market = () => {
+  const dispatch = useAppDispatch();
   const { marketReducer } = useAppSelector(state => state);
   const { coins } = marketReducer;
 
@@ -151,7 +152,7 @@ const Market = () => {
   // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
   useFocusEffect(
     React.useCallback(() => {
-      getCoinMarket();
+      dispatch(getCoinMarket());
     }, [])
   );
 

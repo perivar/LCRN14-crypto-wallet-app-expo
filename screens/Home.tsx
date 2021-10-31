@@ -4,11 +4,12 @@ import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { BalanceInfo, Chart, IconTextButton } from '../components';
 import { COLORS, dummyData, FONTS, icons, SIZES } from '../constants';
-import { useAppSelector } from '../stores/hooks';
+import { useAppDispatch, useAppSelector } from '../stores/hooks';
 import { getCoinMarket, getHoldings } from '../stores/market/marketActions';
 import MainLayout from './MainLayout';
 
 const Home = () => {
+  const dispatch = useAppDispatch();
   const { marketReducer } = useAppSelector(state => state);
   const { myHoldings, coins } = marketReducer;
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -16,8 +17,8 @@ const Home = () => {
   // PIN: using useFocusEffect instead of useEffect to force reload when the page get focus
   useFocusEffect(
     React.useCallback(() => {
-      getHoldings(dummyData.holdings);
-      getCoinMarket();
+      dispatch(getHoldings(dummyData.holdings));
+      dispatch(getCoinMarket());
     }, [])
   );
 

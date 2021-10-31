@@ -1,9 +1,11 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 
 import marketReducer from './market/marketReducer';
 import tabReducer from './tab/tabReducer';
 
-export default combineReducers({
+const rootReducer = combineReducers({
   tabReducer,
   marketReducer,
 });
+
+export default rootReducer;
