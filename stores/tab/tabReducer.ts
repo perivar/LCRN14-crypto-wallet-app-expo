@@ -15,10 +15,7 @@ const tabSlice = createSlice({
   initialState,
   reducers: {
     setTradeModalVisibility: (state, action: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        isTradeModalVisible: action.payload,
-      };
+      state.isTradeModalVisible = action.payload;
     },
   },
 });

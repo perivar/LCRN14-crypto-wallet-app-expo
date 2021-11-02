@@ -21,40 +21,22 @@ const marketSlice = createSlice({
   initialState,
   reducers: {
     getHoldingsBegin: state => {
-      return {
-        ...state,
-        loading: true,
-      };
+      state.loading = true;
     },
     getHoldingsSuccess: (state, action: PayloadAction<any[]>) => {
-      return {
-        ...state,
-        myHoldings: action.payload,
-      };
+      state.myHoldings = action.payload;
     },
     getHoldingsFailure: (state, action: PayloadAction<any[]>) => {
-      return {
-        ...state,
-        error: action.payload,
-      };
+      state.error = action.payload;
     },
     getCoinMarketBegin: state => {
-      return {
-        ...state,
-        loading: true,
-      };
+      state.loading = true;
     },
     getCoinMarketSuccess: (state, action: PayloadAction<any[]>) => {
-      return {
-        ...state,
-        coins: action.payload,
-      };
+      state.coins = action.payload;
     },
     getCoinMarketFailure: (state, action: PayloadAction<any[]>) => {
-      return {
-        ...state,
-        error: action.payload,
-      };
+      state.error = action.payload;
     },
   },
 });
